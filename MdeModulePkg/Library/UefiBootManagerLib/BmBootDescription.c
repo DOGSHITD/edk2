@@ -25,6 +25,8 @@ CHAR16       mBmUefiPrefix[] = L"UEFI ";
 
 LIST_ENTRY mPlatformBootDescriptionHandlers = INITIALIZE_LIST_HEAD_VARIABLE (mPlatformBootDescriptionHandlers);
 
+NVME_ADMIN_CONTROLLER_DATA               mControllerData;
+
 /**
   For a bootable Device path, return its boot type.
 
@@ -568,7 +570,6 @@ BmGetNvmeDescription (
   EFI_NVM_EXPRESS_PASS_THRU_COMMAND_PACKET CommandPacket;
   EFI_NVM_EXPRESS_COMMAND                  Command;
   EFI_NVM_EXPRESS_COMPLETION               Completion;
-  NVME_ADMIN_CONTROLLER_DATA               ControllerData;
   CHAR16                                   *Description;
   CHAR16                                   *Char;
   UINTN                                    Index;
@@ -606,8 +607,8 @@ BmGetNvmeDescription (
   Command.Nsid        = 0;
   CommandPacket.NvmeCmd        = &Command;
   CommandPacket.NvmeCompletion = &Completion;
-  CommandPacket.TransferBuffer = &ControllerData;
-  CommandPacket.TransferLength = sizeof (ControllerData);
+  CommandPacket.TransferBuffer = &mControllerData;
+  CommandPacket.TransferLength = sizeof (mControllerData);
   CommandPacket.CommandTimeout = EFI_TIMER_PERIOD_SECONDS (5);
   CommandPacket.QueueType      = NVME_ADMIN_QUEUE;
   //
@@ -627,18 +628,18 @@ BmGetNvmeDescription (
   }
 
   Description = AllocateZeroPool (
-                  (ARRAY_SIZE (ControllerData.Mn) + 1
-                   + ARRAY_SIZE (ControllerData.Sn) + 1
+                  (ARRAY_SIZE (mControllerData.Mn) + 1
+                   + ARRAY_SIZE (mControllerData.Sn) + 1
                    + MAXIMUM_VALUE_CHARACTERS + 1
                    ) * sizeof (CHAR16));
   if (Description != NULL) {
     Char = Description;
-    for (Index = 0; Index < ARRAY_SIZE (ControllerData.Mn); Index++) {
-      *(Char++) = (CHAR16) ControllerData.Mn[Index];
+    for (Index = 0; Index < ARRAY_SIZE (mControllerData.Mn); Index++) {
+      *(Char++) = (CHAR16) mControllerData.Mn[Index];
     }
     *(Char++) = L' ';
-    for (Index = 0; Index < ARRAY_SIZE (ControllerData.Sn); Index++) {
-      *(Char++) = (CHAR16) ControllerData.Sn[Index];
+    for (Index = 0; Index < ARRAY_SIZE (mControllerData.Sn); Index++) {
+      *(Char++) = (CHAR16) mControllerData.Sn[Index];
     }
     *(Char++) = L' ';
     UnicodeValueToStringS (
