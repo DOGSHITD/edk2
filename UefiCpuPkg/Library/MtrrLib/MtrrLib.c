@@ -2095,6 +2095,10 @@ MtrrLibSetMemoryRanges (
   return RETURN_SUCCESS;
 }
 
+UINT64                    ClearMasks[ARRAY_SIZE (mMtrrLibFixedMtrrTable)];
+UINT64                    OrMasks[ARRAY_SIZE (mMtrrLibFixedMtrrTable)];
+BOOLEAN                   LocalModified[ARRAY_SIZE (mMtrrLibFixedMtrrTable)];
+
 /**
   Set the below-1MB memory attribute to fixed MTRR buffer.
   Modified flag array indicates which fixed MTRR is modified.
@@ -2122,9 +2126,6 @@ MtrrLibSetBelow1MBMemoryAttribute (
   UINT32                    MsrIndex;
   UINT64                    ClearMask;
   UINT64                    OrMask;
-  UINT64                    ClearMasks[ARRAY_SIZE (mMtrrLibFixedMtrrTable)];
-  UINT64                    OrMasks[ARRAY_SIZE (mMtrrLibFixedMtrrTable)];
-  BOOLEAN                   LocalModified[ARRAY_SIZE (mMtrrLibFixedMtrrTable)];
 
   ASSERT (BaseAddress < BASE_1MB);
 
@@ -2155,6 +2156,8 @@ MtrrLibSetBelow1MBMemoryAttribute (
   }
   return RETURN_SUCCESS;
 }
+
+MTRR_VARIABLE_SETTINGS    VariableSettings;
 
 /**
   This function attempts to set the attributes into MTRR setting buffer for multiple memory ranges.
@@ -2201,7 +2204,6 @@ MtrrSetMemoryAttributesInMtrrSettings (
   UINT64                    MtrrValidBitsMask;
   UINT64                    MtrrValidAddressMask;
   MTRR_MEMORY_CACHE_TYPE    DefaultType;
-  MTRR_VARIABLE_SETTINGS    VariableSettings;
   MTRR_MEMORY_RANGE         WorkingRanges[2 * ARRAY_SIZE (MtrrSetting->Variables.Mtrr) + 2];
   UINTN                     WorkingRangeCount;
   BOOLEAN                   Modified;
@@ -2490,6 +2492,8 @@ Exit:
   return Status;
 }
 
+UINT8                      Scratch[SCRATCH_BUFFER_SIZE];
+
 /**
   This function attempts to set the attributes into MTRR setting buffer for a memory range.
 
@@ -2528,7 +2532,6 @@ MtrrSetMemoryAttributeInMtrrSettings (
   IN MTRR_MEMORY_CACHE_TYPE  Attribute
   )
 {
-  UINT8                      Scratch[SCRATCH_BUFFER_SIZE];
   UINTN                      ScratchSize;
   MTRR_MEMORY_RANGE          Range;
 
