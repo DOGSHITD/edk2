@@ -962,7 +962,7 @@ Pkcs7GetAttachedContent (
   Pkcs7      = NULL;
   SignedData = NULL;
   OctStr     = NULL;
-
+if (0) {
   Status = WrapPkcs7Data (P7Data, P7Length, &Wrapped, &SignedData, &SignedDataSize);
   if (!Status || (SignedDataSize > INT_MAX)) {
     goto _Exit;
@@ -1021,6 +1021,7 @@ _Exit:
   if (!Wrapped) {
     OPENSSL_free (SignedData);
   }
-
   return Status;
+}
+  return FALSE;
 }

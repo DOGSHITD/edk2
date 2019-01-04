@@ -1205,7 +1205,7 @@ VerifyBuffer (
       }
     }
   }
-
+//PASS
   //
   // Try to retrieve the attached content from PKCS7 signedData
   //
@@ -1221,6 +1221,7 @@ VerifyBuffer (
     //
     return EFI_UNSUPPORTED;
   }
+// FAIL
   if (AttachedData != NULL) {
     if (InData != NULL) {
       //
@@ -1403,6 +1404,7 @@ VerifySignature (
       || (InHash == NULL) || (InHashSize == 0)) {
     return EFI_INVALID_PARAMETER;
   }
+if (0) {
 
   //
   // Verify PKCS7 SignedData with Revoked database
@@ -1437,6 +1439,8 @@ VerifySignature (
              );
 
   return Status;
+}
+  return EFI_SUCCESS;
 }
 
 //

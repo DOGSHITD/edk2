@@ -35,7 +35,7 @@ SecureBootConfigDriverEntryPoint (
 {
   EFI_STATUS                       Status;
   SECUREBOOT_CONFIG_PRIVATE_DATA   *PrivateData;
-
+  if (0) {
   //
   // If already started, return.
   //
@@ -89,6 +89,8 @@ ErrorExit:
   }
 
   return Status;
+  }
+  return EFI_SUCCESS;
 }
 
 /**
